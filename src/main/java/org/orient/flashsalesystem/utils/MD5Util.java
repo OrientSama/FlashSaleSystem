@@ -19,7 +19,7 @@ public class MD5Util {
         return md5(str);
     }
 
-    private static String formPassToDBPass(String formPass, String back_salt) {
+    public static String formPassToDBPass(String formPass, String back_salt) {
         String str ="" +  back_salt.charAt(5) + back_salt.charAt(3) + formPass + back_salt.charAt(1) + back_salt.charAt(2);
         return md5(str);
     }
