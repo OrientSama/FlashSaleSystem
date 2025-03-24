@@ -1,10 +1,14 @@
 package org.orient.flashsalesystem.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.orient.flashsalesystem.vo.LoginVo;
+import org.orient.flashsalesystem.vo.RespBean;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-@RestController
+@Controller
 @RequestMapping("/login")
 @Slf4j
 public class LoginController {
@@ -14,6 +18,15 @@ public class LoginController {
         return "login";
     }
 
+    /**
+     * 登录功能
+     * @param loginVo
+     * @return
+     */
     @RequestMapping("/doLogin")
-    public String doLogin() {}
+    @ResponseBody
+    public RespBean doLogin(LoginVo loginVo) {
+        log.info("{}", loginVo);
+        return null;
+    }
 }
