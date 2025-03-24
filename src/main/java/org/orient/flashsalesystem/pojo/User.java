@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("t_user")
-@ApiModel(value = "User对象", description = "")
+@ApiModel(value = "User对象", description = "用户数据")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,7 +49,7 @@ public class User implements Serializable {
      * 注册时间
      */
     @ApiModelProperty("注册时间")
-    private LocalDateTime redisterDate;
+    private LocalDateTime registerDate;
 
     /**
      * 最后登录时间
