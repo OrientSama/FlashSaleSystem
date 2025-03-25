@@ -3,7 +3,6 @@ package org.orient.flashsalesystem.excepthion;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.orient.flashsalesystem.vo.RespBean;
 import org.orient.flashsalesystem.vo.RespBeanEnum;
 
 /**

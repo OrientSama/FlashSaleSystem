@@ -1,6 +1,8 @@
 package org.orient.flashsalesystem.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.orient.flashsalesystem.pojo.User;
 import org.orient.flashsalesystem.vo.LoginVo;
 import org.orient.flashsalesystem.vo.RespBean;
@@ -20,5 +22,5 @@ public interface IUserService extends IService<User> {
      * @param loginVo
      * @return
      */
-    RespBean doLogin(LoginVo loginVo);
+    RespBean doLogin(LoginVo loginVo, HttpServletRequest request, HttpServletResponse response);
 }
