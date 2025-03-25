@@ -1,5 +1,6 @@
 package org.orient.flashsalesystem.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.orient.flashsalesystem.mapper.UserMapper;
 import org.orient.flashsalesystem.service.IUserService;
@@ -30,7 +31,7 @@ public class LoginController {
      */
     @RequestMapping("/doLogin")
     @ResponseBody
-    public RespBean doLogin(LoginVo loginVo) {
+    public RespBean doLogin(@Valid LoginVo loginVo) {
         return userService.doLogin(loginVo);
     }
 }
