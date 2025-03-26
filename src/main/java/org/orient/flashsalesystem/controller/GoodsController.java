@@ -25,6 +25,7 @@ public class GoodsController {
 
     /**
      * 跳转到商品页面
+     * windows first: QPS 2719
      */
     @RequestMapping("/toList")
     public String toList(Model model, User user) {

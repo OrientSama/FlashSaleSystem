@@ -19,6 +19,8 @@ import org.orient.flashsalesystem.vo.RespBeanEnum;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * <p>
  * 服务实现类
@@ -58,6 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String ticket = UUIDUtil.uuid();
 //        request.getSession().setAttribute(ticket, user);
         redisTemplate.opsForValue().set("user:" + ticket, user);
+        redisTemplate.expire("user:" + ticket, 72, TimeUnit.HOURS);
         CookieUtil.setCookie(request, response, "userTicket", ticket);
         return RespBean.success();
     }
