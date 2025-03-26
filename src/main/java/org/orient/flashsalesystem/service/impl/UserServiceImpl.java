@@ -62,7 +62,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         redisTemplate.opsForValue().set("user:" + ticket, user);
         redisTemplate.expire("user:" + ticket, 72, TimeUnit.HOURS);
         CookieUtil.setCookie(request, response, "userTicket", ticket);
-        return RespBean.success();
+        return RespBean.success(ticket);
     }
 
     @Override
