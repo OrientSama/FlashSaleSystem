@@ -2,6 +2,9 @@ package org.orient.flashsalesystem.service;
 
 import org.orient.flashsalesystem.pojo.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.orient.flashsalesystem.vo.GoodsVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IGoodsService extends IService<Goods> {
 
+    /**
+     * 获取商品列表
+     * @return 商品列表
+     */
+    List<GoodsVo> findGoodsVo();
 }
