@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoodsVo extends Goods {
-    private BigDecimal flashPrice;
+    private BigDecimal seckillPrice;
     private Integer stockCount;
     private Date startDate;
     private Date endDate;

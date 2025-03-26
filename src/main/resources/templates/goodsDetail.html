@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>商品详情</title>
+    <!-- jquery -->
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <!-- layer -->
+    <script type="text/javascript" src="/layer/layer.js"></script>
+    <!-- common.js -->
+    <script type="text/javascript" src="/js/common.js"></script>
+</head>
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">秒杀商品详情</div>
+    <div class="panel-body">
+        <span id="userTip"> 您还没有登录，请登陆后再操作<br/></span>
+        <span>没有收货地址的提示。。。</span>
+    </div>
+    <table class="table" id="goods">
+        <tr>
+            <td>商品名称</td>
+            <td colspan="3" th:text="${goods.goodsName}"></td>
+        </tr>
+        <tr>
+            <td>商品图片</td>
+            <td colspan="3"><img th:src="@{${goods.goodsImg}}" width="200" height="200" alt=""/></td>
+        </tr>
+        <tr>
+            <td>秒杀开始时间</td>
+            <td th:text="${#dates.format(goods.startDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td id="flashSaleTip">
+                <input type="hidden" id="remainSeconds" th:value="${remainSeconds}">
+                <input type="hidden" id="flashStatus" th:value="${flashStatus}">
+                <span id="statusText"></span>
+            </td>
+            <td>
+                <form id="secKillForm" method="post" action="/secKill/doSecKill">
+                    <input type="hidden" name="goodsId" th:value="${goods.id}">
+                    <button class="btn btn-primary btn-block" id="buyButton" type="submit">立即秒杀</button>
+                </form>
+                <!--                <div class="row">-->
+                <!--                    <div class="form-inline">-->
+                <!--                        <img id="captchaImg"  width="130" height="32" onclick="refreshcaptcha()" style="display: none"/>-->
+                <!--                        <input id="captcha" class="form-control" style="display: none">-->
+                <!--                        <button class="btn btn-primary" id="buyButton" type="button" onclick="getSecKillPath()">立即秒杀</button>-->
+                <!--                        <input type="hidden" name="goodsId" id="goodsId">-->
+                <!--                    </div>-->
+                <!--                </div>-->
+            </td>
+        </tr>
+        <tr>
+            <td>商品原价</td>
+            <td colspan="3" th:text="${goods.goodsPrice}"></td>
+        </tr>
+        <tr>
+            <td>秒杀价</td>
+            <td colspan="3" th:text="${goods.seckillPrice}"></td>
+        </tr>
+        <tr>
+            <td>库存数量</td>
+            <td colspan="3" th:text="${goods.stockCount}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+<script>
+    $(function () {
+        countDown()
+    })
+
+    let timeout;
+
+    function countDown() {
+        const $remainSeconds = $("#remainSeconds");
+        const $countDown = $("#countDown");
+        const $buyButton = $("#buyButton");
+        const $captchaImg = $("#captchaImg");
+        const $captcha = $("#captcha");
+        const $flashSaleTip = $("#flashSaleTip");
+
+        const flashStatus = parseInt($("#flashStatus").val(), 10); // 获取后端传来的秒杀状态
+        let remainSeconds = parseInt($remainSeconds.val(), 10);
+        console.log(flashStatus)
+        console.log(remainSeconds)
+
+        // 强制同步服务器时间（如果有 serverTime 字段）
+        const serverTimeElement = $("#serverTime");
+        let serverTime = serverTimeElement.length ? new Date(serverTimeElement.val()).getTime() : new Date().getTime();
+        const clientTime = new Date().getTime();
+        const timeDiff = serverTime - clientTime;
+        remainSeconds -= Math.floor(timeDiff / 1000);
+
+        if (timeout) clearInterval(timeout);
+
+        // 根据 flashStatus 及 remainSeconds 设置按钮状态
+        if (flashStatus === 2 || remainSeconds < 0) {
+            // 秒杀已结束
+            $buyButton.prop("disabled", true);
+            updateStatusText(-1);
+            $captcha.hide();
+            $captchaImg.hide();
+            $flashSaleTip.text("秒杀已结束！");
+        } else if (flashStatus === 1) {
+            // 秒杀进行中
+            handleSecKillActive();
+        } else if (flashStatus === 0) {
+            // 秒杀未开始
+            $buyButton.prop("disabled", true);
+            updateStatusText(remainSeconds);
+
+            timeout = setInterval(() => {
+                remainSeconds--;
+                $remainSeconds.val(remainSeconds);
+                $countDown.text(remainSeconds);
+                updateStatusText(remainSeconds);
+
+                if (remainSeconds <= 0) {
+                    clearInterval(timeout);
+                    handleSecKillActive();
+                }
+            }, 1000);
+        }
+    }
+
+    function handleSecKillActive() {
+        $("#buyButton").prop("disabled", false);
+        $("#flashSaleTip").html("秒杀进行中");
+        const goodsId = $("#goodsId").val();
+        const timestamp = encodeURIComponent(new Date().toISOString());
+        $("#captchaImg").attr("src", `/secKill/captcha?goodsId=${goodsId}&time=${timestamp}`);
+        $("#captcha").show();
+        $("#captchaImg").show();
+    }
+
+    function updateStatusText(remainSeconds) {
+        const $statusText = $("#statusText");
+        if (remainSeconds > 0) {
+            $statusText.html(`秒杀倒计时: ${remainSeconds}秒`);
+        } else if (remainSeconds === 0) {
+            $statusText.html("秒杀进行中!");
+        } else {
+            $statusText.html("秒杀已结束!");
+        }
+    }
+</script>
+</html>

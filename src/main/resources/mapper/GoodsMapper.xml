@@ -7,4 +7,12 @@
         FROM `t_goods` g
                  LEFT JOIN t_flash_goods fg ON g.id = fg.goods_id
     </select>
+
+    <!--    获取商品详情-->
+    <select id="findGoodsVoByGoodsId" resultType="org.orient.flashsalesystem.vo.GoodsVo">
+        SELECT *
+        FROM `t_goods` g
+                 LEFT JOIN t_flash_goods fg ON g.id = fg.goods_id
+        WHERE g.id = #{goodsID}
+    </select>
 </mapper>
