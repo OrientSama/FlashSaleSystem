@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * 秒杀功能
+ * windows 优化前:QPS: 2369.7 20个商品 秒杀订单835条
  */
 @Controller
 @RequestMapping("/secKill")
