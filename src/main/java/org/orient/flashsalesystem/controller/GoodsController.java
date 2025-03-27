@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.orient.flashsalesystem.pojo.User;
 import org.orient.flashsalesystem.service.IGoodsService;
 import org.orient.flashsalesystem.service.IUserService;
+import org.orient.flashsalesystem.vo.DetailVo;
 import org.orient.flashsalesystem.vo.GoodsVo;
+import org.orient.flashsalesystem.vo.RespBean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
@@ -42,7 +44,8 @@ public class GoodsController {
      * 跳转到商品页面
      * 如果redis中有该页面,直接返回;
      * 如果redis中没有该页面, 那么生成页面, 放入redis, 再返回
-     * windows first: QPS 2719
+     * windows 优化前: QPS 2719
+     * 10000/30 优化后: QPS:22401
      */
     @ResponseBody
     @RequestMapping(value = "/toList", produces = "text/html;charset=utf-8")
@@ -84,6 +87,37 @@ public class GoodsController {
             return html;
         }
         model.addAttribute("user", user);
+        Result result = getResult(goodsId);
+        model.addAttribute("remainSeconds", result.remainSeconds);
+        model.addAttribute("flashStatus", result.flashStatus);
+        model.addAttribute("goods", result.goodsVo);
+
+        // 如果为空, 手动渲染
+        JakartaServletWebApplication application = JakartaServletWebApplication.buildApplication(request.getServletContext());
+        IServletWebExchange exchange = application.buildExchange(request, response);
+        WebContext webContext = new WebContext(exchange, exchange.getLocale(), model.asMap());
+        html = thymeleafViewResolver.getTemplateEngine().process("goodsDetail", webContext);
+        if (!StringUtils.isEmpty(html)) {
+            valueOperations.set("goodsDetailHtml:" + goodsId, html, Duration.ofMinutes(3));
+        }
+        return html;
+    }
+
+    @RequestMapping("/toDetail/{goodsId}")
+    @ResponseBody
+    public RespBean toDetail2(@PathVariable Long goodsId, User user) {
+
+        Result result = getResult(goodsId);
+
+        DetailVo detailVo = new DetailVo();
+        detailVo.setUser(user);
+        detailVo.setGoodsVo(result.goodsVo());
+        detailVo.setFlashStatus(result.flashStatus());
+        detailVo.setRemainSeconds(result.remainSeconds());
+        return RespBean.success(detailVo);
+    }
+
+    private Result getResult(Long goodsId) {
         GoodsVo goodsVo = goodsService.findGoodsVoByGoodsId(goodsId);
         // 计算flashStatus
         Date startDate = goodsVo.getStartDate();
@@ -100,18 +134,9 @@ public class GoodsController {
         } else {
             flashStatus = 1;
         }
-        model.addAttribute("remainSeconds", remainSeconds);
-        model.addAttribute("flashStatus", flashStatus);
-        model.addAttribute("goods", goodsVo);
+        return new Result(goodsVo, remainSeconds, flashStatus);
+    }
 
-        // 如果为空, 手动渲染
-        JakartaServletWebApplication application = JakartaServletWebApplication.buildApplication(request.getServletContext());
-        IServletWebExchange exchange = application.buildExchange(request, response);
-        WebContext webContext = new WebContext(exchange, exchange.getLocale(), model.asMap());
-        html = thymeleafViewResolver.getTemplateEngine().process("goodsDetail", webContext);
-        if (!StringUtils.isEmpty(html)) {
-            valueOperations.set("goodsDetailHtml:" + goodsId, html, Duration.ofMinutes(3));
-        }
-        return html;
+    private record Result(GoodsVo goodsVo, int remainSeconds, int flashStatus) {
     }
 }
