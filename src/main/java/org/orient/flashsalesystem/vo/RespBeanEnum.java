@@ -20,7 +20,10 @@ public enum RespBeanEnum {
     SESSION_ERROR(500215, "用户不存在"),
     // 秒杀模块
     EMPTY_STOCK(500500, "库存不足!"),
-    REPEAT_ERROR(500501, "该商品每人限购一件!");
+    REPEAT_ERROR(500501, "该商品每人限购一件!"),
+
+    // 订单模块
+    ORDER_NOT_EXIST(503500, "订单信息不存在!");
 
     private final Integer code;
     private final String message;

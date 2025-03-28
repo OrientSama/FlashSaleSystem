@@ -75,12 +75,6 @@ public class Order implements Serializable {
     private BigDecimal goodsPrice;
 
     /**
-     * 冗余商品标题
-     */
-    @ApiModelProperty("冗余商品标题")
-    private String goodsTitle;
-
-    /**
      * 1pc, 2android,3ios
      */
     @ApiModelProperty("1pc, 2android,3ios")

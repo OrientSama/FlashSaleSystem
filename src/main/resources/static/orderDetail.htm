@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
-<html >
+<html>
 <head>
     <title>订单详情</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <!-- jquery -->
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <!-- bootstrap -->
@@ -23,7 +23,7 @@
         </tr>
         <tr>
             <td>商品图片</td>
-            <td colspan="2"><img id="goodsImg" width="200" height="200" /></td>
+            <td colspan="2"><img id="goodsImg" width="200" height="200"/></td>
         </tr>
         <tr>
             <td>订单价格</td>
@@ -36,12 +36,6 @@
         <tr>
             <td>订单状态</td>
             <td id="status">
-<!--                <span th:if="${order.status eq 0}">未支付</span>-->
-<!--                <span th:if="${order.status eq 1}">待发货</span>-->
-<!--                <span th:if="${order.status eq 2}">已发货</span>-->
-<!--                <span th:if="${order.status eq 3}">已收货</span>-->
-<!--                <span th:if="${order.status eq 4}">已退款</span>-->
-<!--                <span th:if="${order.status eq 5}">已完成</span>-->
             </td>
             <td>
                 <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
@@ -49,7 +43,7 @@
         </tr>
         <tr>
             <td>收货人</td>
-            <td colspan="2">XXX  18012345678</td>
+            <td colspan="2">XXX 18012345678</td>
         </tr>
         <tr>
             <td>收货地址</td>
@@ -59,26 +53,26 @@
 </div>
 
 <script>
-    $(function() {
+    $(function () {
         getOrderDetail();
     });
 
     function getOrderDetail() {
         var orderId = g_getQueryString("orderId");
         $.ajax({
-            url:'/order/detail',
-            type:'GET',
-            data:{
-                orderId:orderId
+            url: '/order/detail',
+            type: 'GET',
+            data: {
+                orderId: orderId
             },
-            success:function (data) {
-                if(data.code==200){
-                    render(data.object);
-                }else {
-                    layer.msg("客户端请求错误");
+            success: function (data) {
+                if (data.code == 200) {
+                    render(data.obj);
+                } else {
+                    layer.msg(data.message);
                 }
             },
-            error:function () {
+            error: function () {
                 layer.msg("客户端请求错误");
             }
         })
