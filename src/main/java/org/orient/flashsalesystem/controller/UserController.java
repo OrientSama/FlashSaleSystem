@@ -1,7 +1,9 @@
 package org.orient.flashsalesystem.controller;
 
 import org.orient.flashsalesystem.pojo.User;
+import org.orient.flashsalesystem.rabbitmq.MQSendder;
 import org.orient.flashsalesystem.vo.RespBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,5 +31,14 @@ public class UserController {
     @ResponseBody
     public RespBean info(User user) {
         return RespBean.success(user);
+    }
+
+    @Autowired
+    private MQSendder mqSendder;
+
+    @RequestMapping("/mq")
+    @ResponseBody
+    public void mq() {
+        mqSendder.send("Hello World and Rabbit MQ");
     }
 }
