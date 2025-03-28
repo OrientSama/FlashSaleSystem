@@ -17,6 +17,7 @@ public enum RespBeanEnum {
     USER_NOT_FOUND(500213, "手机号码不存在"),
     UPDATE_PASSWORD_ERROR(500214, "更新密码失败"),
     BIND_ERROR(500212, "参数校验异常"),
+    SESSION_ERROR(500215, "用户不存在"),
     // 秒杀模块
     EMPTY_STOCK(500500, "库存不足!"),
     REPEAT_ERROR(500501, "该商品每人限购一件!");

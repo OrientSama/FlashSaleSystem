@@ -9,10 +9,13 @@ import org.orient.flashsalesystem.service.IFlashOrderService;
 import org.orient.flashsalesystem.service.IGoodsService;
 import org.orient.flashsalesystem.service.IOrderService;
 import org.orient.flashsalesystem.vo.GoodsVo;
+import org.orient.flashsalesystem.vo.RespBean;
 import org.orient.flashsalesystem.vo.RespBeanEnum;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 秒杀功能
@@ -28,8 +31,8 @@ public class SecKillController {
     @Resource
     private IOrderService orderService;
 
-    @RequestMapping("/doSecKill")
-    public String doSecKill(Model model, User user, Long goodsId) {
+    @RequestMapping("/doSecKill2")
+    public String doSecKill2(Model model, User user, Long goodsId) {
         if (user == null) {
             return "redirect:/login";
         }
@@ -50,5 +53,27 @@ public class SecKillController {
         model.addAttribute("order", order);
         model.addAttribute("goodsVo", goodsVo);
         return "orderDetail";
+    }
+
+    @PostMapping("/doSecKill")
+    @ResponseBody
+    public RespBean doSecKill(Model model, User user, Long goodsId) {
+        if (user == null) {
+            return RespBean.error(RespBeanEnum.SESSION_ERROR);
+        }
+        GoodsVo goodsVo = goodsService.findGoodsVoByGoodsId(goodsId);
+        if (goodsVo.getStockCount() < 1) {
+            model.addAttribute("errmsg", RespBeanEnum.EMPTY_STOCK);
+            return RespBean.error(RespBeanEnum.EMPTY_STOCK);
+        }
+        // 判断是否重复抢购
+        FlashOrder flashOrder = flashOrderService.getOne(new QueryWrapper<FlashOrder>().eq("goods_id", goodsId).eq("user_id", user.getId()));
+        if (flashOrder != null) {
+            model.addAttribute("errmsg", RespBeanEnum.REPEAT_ERROR);
+            return RespBean.error(RespBeanEnum.REPEAT_ERROR);
+        }
+        // 秒杀
+        Order order = orderService.seckill(user, goodsVo);
+        return RespBean.success(order);
     }
 }

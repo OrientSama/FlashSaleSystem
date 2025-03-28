@@ -35,6 +35,21 @@ spring:
           # 空闲连接
           max-idle: 200
           min-idle: 5
+  web:
+    # 静态资源缓存
+    resources:
+      chain:
+#        资源链启动缓存
+        enabled: true
+        cache: true
+        # 启动压缩资源
+        compressed: true
+
+      cache:
+        cachecontrol:
+          max-age: 3600
+      static-locations: classpath:/META-INF/resources/, classpath:/resources/, classpath:/static/, classpath:/public/
+
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*Mapper.xml
