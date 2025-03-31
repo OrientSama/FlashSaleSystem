@@ -32,13 +32,4 @@ public class UserController {
     public RespBean info(User user) {
         return RespBean.success(user);
     }
-
-    @Autowired
-    private MQSendder mqSendder;
-
-    @RequestMapping("/mq")
-    @ResponseBody
-    public void mq() {
-        mqSendder.send("Hello World and Rabbit MQ");
-    }
 }

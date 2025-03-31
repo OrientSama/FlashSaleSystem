@@ -11,11 +11,6 @@ public class MQSendder {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public void send(Object msg) {
-        log.info("发送消息:" + msg);
-        rabbitTemplate.convertAndSend("queue", msg);
-    }
-
     public void sendSeckillMessage(String message) {
         log.info("发送消息: " + message);
         rabbitTemplate.convertAndSend("SecKillExchange","seckill.message", message);

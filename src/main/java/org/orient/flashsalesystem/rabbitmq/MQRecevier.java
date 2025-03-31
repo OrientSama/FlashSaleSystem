@@ -26,11 +26,6 @@ public class MQRecevier {
     @Resource
     private IOrderService orderService;
 
-    @RabbitListener(queues = "queue")
-    public void receive(Object msg) {
-        log.info("接受消息:" + msg);
-    }
-
     /**
      * 下单操作, 将redis中预先减掉的 库存, 实际在sql中减去
      * @param msg

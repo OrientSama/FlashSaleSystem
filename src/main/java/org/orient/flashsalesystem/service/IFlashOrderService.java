@@ -2,6 +2,7 @@ package org.orient.flashsalesystem.service;
 
 import org.orient.flashsalesystem.pojo.FlashOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.orient.flashsalesystem.pojo.User;
 
 /**
  * <p>
@@ -13,4 +14,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IFlashOrderService extends IService<FlashOrder> {
 
+    /**
+     * 获取秒杀结果
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    Long getResult(User user, Long goodsId);
 }

@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -104,7 +105,7 @@ public class SecKillController implements InitializingBean {
 
         // 下单 秒杀
         SeckillMessage message = new SeckillMessage(user, goodsId);
-        mqSendder.send(JsonUtil.object2JsonStr(message));
+        mqSendder.sendSeckillMessage(JsonUtil.object2JsonStr(message));
         return RespBean.success(0);
     }
 
@@ -124,5 +125,21 @@ public class SecKillController implements InitializingBean {
             redisTemplate.opsForValue().set("seckillGoods:" + goodsVo.getId(), goodsVo.getStockCount());
             EmptyStockMap.put(goodsVo.getId(), false);
         });
+    }
+
+    /**
+     * 获取秒杀结果
+     * @param user
+     * @param goodsId orderId:成功,  -1失败  0派对中
+     * @return
+     */
+    @GetMapping("/result")
+    @ResponseBody
+    public RespBean getResult(User user, Long goodsId) {
+        if(user==null){
+            return RespBean.error(RespBeanEnum.SESSION_ERROR);
+        }
+        Long orderId = flashOrderService.getResult(user, goodsId);
+        return RespBean.success(orderId);
     }
 }
