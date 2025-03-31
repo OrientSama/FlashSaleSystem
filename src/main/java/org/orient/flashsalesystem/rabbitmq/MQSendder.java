@@ -15,4 +15,9 @@ public class MQSendder {
         log.info("发送消息:" + msg);
         rabbitTemplate.convertAndSend("queue", msg);
     }
+
+    public void sendSeckillMessage(String message) {
+        log.info("发送消息: " + message);
+        rabbitTemplate.convertAndSend("SecKillExchange","seckill.message", message);
+    }
 }
