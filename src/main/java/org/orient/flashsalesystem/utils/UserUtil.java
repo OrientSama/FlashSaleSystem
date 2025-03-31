@@ -16,7 +16,7 @@ import java.util.List;
 
 public class UserUtil {
 
-    private static void createUser(int count) throws Exception {
+    private static void createUser(int count, boolean isInsertDB) throws Exception {
         List<User> users = new ArrayList<User>();
         for (int i = 5; i < count; i++) {
             User user = new User();
@@ -27,22 +27,24 @@ public class UserUtil {
             users.add(user);
         }
         System.out.println("create user!");
-        // 插入数据库
-        Connection conn = getConn();
-        String sql = "insert into t_user(id, nickname, password, salt) values(?,?,?,?)";
-        PreparedStatement prepareStatement = conn.prepareStatement(sql);
-        for (User user : users) {
-            prepareStatement.setLong(1, user.getId());
-            prepareStatement.setString(2, user.getNickname());
-            prepareStatement.setString(4, user.getSalt());
-            prepareStatement.setString(3, user.getPassword());
-            prepareStatement.addBatch();
+        if (isInsertDB) {
+            // 插入数据库
+            Connection conn = getConn();
+            String sql = "insert into t_user(id, nickname, password, salt) values(?,?,?,?)";
+            PreparedStatement prepareStatement = conn.prepareStatement(sql);
+            for (User user : users) {
+                prepareStatement.setLong(1, user.getId());
+                prepareStatement.setString(2, user.getNickname());
+                prepareStatement.setString(4, user.getSalt());
+                prepareStatement.setString(3, user.getPassword());
+                prepareStatement.addBatch();
+            }
+            prepareStatement.executeBatch();
+            prepareStatement.clearParameters();
+            prepareStatement.close();
+            conn.close();
+            System.out.println("插入完成!");
         }
-        prepareStatement.executeBatch();
-        prepareStatement.clearParameters();
-        prepareStatement.close();
-        conn.close();
-        System.out.println("插入完成!");
         // 登录 获取userticket
         String url = "http://localhost:8080/login/doLogin";
         File file = new File("C:\\Users\\Administrator\\Desktop\\config.txt");
@@ -98,6 +100,6 @@ public class UserUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        createUser(5000);
+        createUser(5000, false);
     }
 }

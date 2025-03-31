@@ -31,7 +31,7 @@ public class FlashOrderServiceImpl extends ServiceImpl<FlashOrderMapper, FlashOr
                 .eq("goods_id", goodsId));
         if (flashOrder != null) {
             return flashOrder.getOrderId();
-        } else if (redisTemplate.hasKey("isStackEmpty:" + goodsId)) {
+        } else if (redisTemplate.hasKey("isStockEmpty:" + goodsId)) {
             return -1L;
         } else {
             return 0L;

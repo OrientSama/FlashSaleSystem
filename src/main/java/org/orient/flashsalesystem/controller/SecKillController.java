@@ -33,9 +33,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 秒杀功能
  * windows 优化前:QPS: 2369.7 20个商品 秒杀订单835条
- * windows 优化后:QPS: 8443   20个商品 秒杀订单133条 剩余0件
+ * 缓存 优化后:QPS: 8443   20个商品 秒杀订单133条 剩余0件
  * 9797.5 20个商品 秒杀订单20条  剩余0件
- * 14492  20个商品 秒杀订单20条  剩余0
+ * 加入mq后:
+ * 12515.6  20个商品 秒杀订单20条  剩余0
+ *
  */
 @Controller
 @RequestMapping("/secKill")
@@ -130,7 +132,7 @@ public class SecKillController implements InitializingBean {
     /**
      * 获取秒杀结果
      * @param user
-     * @param goodsId orderId:成功,  -1失败  0派对中
+     * @param goodsId orderId:成功,  -1失败  0排队中
      * @return
      */
     @GetMapping("/result")
